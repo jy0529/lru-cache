@@ -4,5 +4,5 @@
 - [x] TDD
 - [ ] Generic Types
 - [ ] Double LinkedList Class
-- [ ] Unordered hash table Class
-- [ ] Benchmark test
+- [ ] Unordered Hash Table Class
+- [ ] Benchmark Test
