@@ -1,3 +1,5 @@
+import { DoubleLinkedList, IDoubleLinkedList } from "./lib/DoubleLinkedList";
+
 type Nil = '__nil__';
 class Node<T> {
     key: T | Nil;
@@ -13,28 +15,17 @@ class Node<T> {
 export class LRUCache<T> {
     capacity: number;
     private hash: Map<T, Node<T>> = new Map<T, Node<T>>();
-    head: Node<T> = new Node();
-    tail: Node<T> = new Node();
+    linedList: IDoubleLinkedList<T> = new DoubleLinkedList<T>();
     constructor(capacity: number) {
         this.capacity = capacity;
-        this.initDoubleLinkedList();
-    }
-
-    private initDoubleLinkedList(): void {
-        this.head.next = this.tail;
-        this.tail.prev = this.head;
     }
 
     private remove(node: Node<T>): void {
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+        this.linedList.remove(node);
     }
 
-    private insert(node1: Node<T>, node2: Node<T>): void {
-        node1.next.prev = node2;
-        node2.next = node1.next;
-        node1.next = node2;
-        node2.prev = node1;
+    private insert(node: Node<T>): void {
+        this.linedList.insert(node);
     }
 
     get(key: T): T | number {
@@ -44,7 +35,7 @@ export class LRUCache<T> {
             // 2. remove node
             this.remove(find);
             // 3. insert node in head;
-            this.insert(this.head, find);
+            this.insert(find);
             if ((find.value) as Nil === '__nil__' || (find.key) as Nil === '__nil__') {
                 return -1;
             }
@@ -64,15 +55,16 @@ export class LRUCache<T> {
         const find = this.hash.get(key);
         if (find !== undefined) {
             this.remove(find);
-            this.insert(this.head, find);
+            this.insert(find);
             find.value = value;
         } else {
             const node = new Node(key, value);
-            this.insert(this.head, node);
+            this.insert(node);
             this.hash.set(key, node);
             if (this.hash.size > this.capacity) {
-                this.hash.delete((this.tail.prev.key) as T);
-                this.remove(this.tail.prev);
+                const tail: Node<T> = this.linedList.getTail();
+                this.hash.delete((tail.key) as T);
+                this.remove(tail);
             }
         }
     }
