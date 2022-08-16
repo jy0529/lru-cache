@@ -2,7 +2,7 @@
 
 ## Tasks
 - [x] TDD
-- [ ] Generic Types
+- [x] Generic Types
 - [ ] Double LinkedList Class
 - [ ] Unordered Hash Table Class
 - [ ] Benchmark Test
